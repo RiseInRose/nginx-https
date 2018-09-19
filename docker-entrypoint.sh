@@ -22,8 +22,10 @@ if [ -f ${SECRETS_FILE} ]; then
     SERVER_DOMAIN=$(crudini --get ${SECRETS_FILE} general domain)
     SERVER_EMAIL=$(crudini --get ${SECRETS_FILE} general email)
     IS_DEBUG=$(crudini --get ${SECRETS_FILE} general debug)
-    GRPC_SERVER_ADDRESS=$(crudini --get ${SECRETS_FILE} grpc_server grpc_server_address)
-    GRPC_SERVER_PORT=$(crudini --get ${SECRETS_FILE} grpc_server grpc_server_port)
+    HTTP_SERVER_ADDRESS=$(crudini --get ${SECRETS_FILE} http_server address)
+    HTTP_SERVER_PORT=$(crudini --get ${SECRETS_FILE} http_server port)
+    GRPC_SERVER_ADDRESS=$(crudini --get ${SECRETS_FILE} grpc_server address)
+    GRPC_SERVER_PORT=$(crudini --get ${SECRETS_FILE} grpc_server port)
 fi
 
 
