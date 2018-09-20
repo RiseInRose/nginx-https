@@ -1,4 +1,4 @@
-# woohyeochoi/https-nginx
+# woohyeochoi/nginx-https
 
 This image automatically built NGinx reverse proxy with Https.
 It also renews https certificates every month (but, fully tested yet)
@@ -10,7 +10,7 @@ docker run -d -p 80:80 -p 443:443 \
            -e IS_DEBUG=true \
            -e SERVER_DOMAIN=*your-server-domain.com* \
            -e SERVER_EMAIL=*your-email@com* \
-           woohyeokchoi/https-nginx
+           woohyeokchoi/nginx-https
 ```
 
 * You should open ports, 80 (Http) and 443 (Https).
