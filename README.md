@@ -1,7 +1,6 @@
 # woohyeochoi/nginx-https
 
-This Docker image is to automatically build NGinx reverse proxy with Https certificate.
-Also, it may renew Https certificates every month (but, I did not fully test yet.)
+This Docker image is to automatically build NGinx reverse proxy with Https certificate. Also, it may renew Https certificates every month (but, I did not fully test yet.)
 
 It is based on nginx:alpine Docker image ([link](https://hub.docker.com/_/nginx/)) and Certbot NGinx plugin ([link](https://github.com/certbot/certbot))
 
