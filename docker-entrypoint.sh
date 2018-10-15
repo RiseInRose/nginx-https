@@ -16,16 +16,16 @@ function error() {
 
 info "NGinx reverse proxy setting"
 
-SECRETS_FILE="/run/secrets/${SECRETS}"
+SECRET_FILE="/run/secrets/${SECRET_NAME}"
 
-if [ -f ${SECRETS_FILE} ]; then
-    SERVER_DOMAIN=$(crudini --get ${SECRETS_FILE} general domain)
-    SERVER_EMAIL=$(crudini --get ${SECRETS_FILE} general email)
-    IS_DEBUG=$(crudini --get ${SECRETS_FILE} general debug)
-    HTTP_SERVER_ADDRESS=$(crudini --get ${SECRETS_FILE} http_server address)
-    HTTP_SERVER_PORT=$(crudini --get ${SECRETS_FILE} http_server port)
-    GRPC_SERVER_ADDRESS=$(crudini --get ${SECRETS_FILE} grpc_server address)
-    GRPC_SERVER_PORT=$(crudini --get ${SECRETS_FILE} grpc_server port)
+if [ -z ${INI_SECTION} ]; then
+    INI_SECTION=''
+fi
+
+if [ -f ${SECRET_FILE} ]; then
+    SERVER_DOMAIN=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" server_domain)
+    SERVER_EMAIL=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" server_email)
+    IS_DEBUG=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" debug)
 fi
 
 
@@ -37,45 +37,39 @@ fi
 
 info "Generate a default configuration"
 
-cat <<EOF > /etc/nginx/conf.d/server.conf
+cat <<EOF > /etc/nginx/conf.d/default.conf
 
 client_max_body_size 20m;
 
 server {
-listen 80;
-access_log /var/log/nginx/proxy.http.access.log main;
-error_log /var/log/nginx/proxy.http.error.log warn;
-server_name ${SERVER_DOMAIN};
+    listen 80;
+    access_log /var/log/nginx/proxy.http.access.log main;
+    error_log /var/log/nginx/proxy.http.error.log warn;
+    server_name ${SERVER_DOMAIN};
 
-location / {
-root /usr/share/nginx/html;
-index index.html index.htm;
-}
-}
-EOF
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+    }
 
-if [ -n "${GRPC_SERVER_ADDRESS}" ] && [ -n "${GRPC_SERVER_PORT}" ]; then
-cat<<EOF >> /etc/nginx/conf.d/server.conf
-upstream grpcservers{
-server ${GRPC_SERVER_ADDRESS}:${GRPC_SERVER_PORT};
+    include /home/conf/nginx/http.loc*.conf;
 }
 
 server {
-listen 50051 http2;
-access_log /var/log/nginx/proxy.grpc.access.log main;
-error_log /var/log/nginx/proxy.grpc.error.log warn;
-server_name ${SERVER_DOMAIN};
-location / {
-grpc_pass grpc://grpcservers;
+    listen 50051 http2;
+    access_log /var/log/nginx/proxy.grpc.access.log main;
+    error_log /var/log/nginx/proxy.grpc.error.log warn;
+
+    include /home/conf/nginx/grpc.loc*.conf;
 }
-}
+
+include /home/conf/nginx/ups*.conf;
 EOF
 
-fi
 
 info "Print default configuration..."
 
-cat /etc/nginx/conf.d/server.conf
+cat /etc/nginx/conf.d/default.conf
 
 if [ -z ${SERVER_EMAIL} ]; then
     info "There is no email for Https certification. Setting Complete."

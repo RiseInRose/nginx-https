@@ -9,7 +9,8 @@ RUN pip2 install --upgrade pip \
 
 RUN mkdir -p /etc/nginx/conf.d.disabled \
     && mv /etc/nginx/conf.d/* /etc/nginx/conf.d.disabled/ \
-    && mkdir -p /scripts
+    && mkdir -p /scripts \
+    && mkdir -p /home/conf/nginx/
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
