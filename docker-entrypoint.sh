@@ -47,11 +47,6 @@ server {
     error_log /var/log/nginx/proxy.http.error.log warn;
     server_name ${SERVER_DOMAIN};
 
-    location / {
-        root /usr/share/nginx/html;
-        index index.html index.htm;
-    }
-
     include /home/conf/nginx/http.loc*.conf;
 }
 
